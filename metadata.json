@@ -1,0 +1,6 @@
+{
+  "name": "AERO Footwear",
+  "description": "A modern, immersive portfolio and e-commerce showcase for AERO, a fictional world-class premium shoe brand, featuring 3D shoe customizer, tech deep-dives, and smooth parallax styling.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
