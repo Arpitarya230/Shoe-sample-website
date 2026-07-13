@@ -24,14 +24,20 @@ export default function App() {
 
   useEffect(() => {
     const handleLocationChange = () => {
-      setIsAdminRoute(window.location.pathname === "/admin");
+      const isPathAdmin = window.location.pathname.endsWith("/admin") || window.location.pathname.endsWith("/admin/");
+      const isHashAdmin = window.location.hash === "#/admin" || window.location.hash === "#admin";
+      const isQueryAdmin = new URLSearchParams(window.location.search).has("admin");
+      
+      setIsAdminRoute(isPathAdmin || isHashAdmin || isQueryAdmin);
     };
 
     handleLocationChange();
 
     window.addEventListener("popstate", handleLocationChange);
+    window.addEventListener("hashchange", handleLocationChange);
     return () => {
       window.removeEventListener("popstate", handleLocationChange);
+      window.removeEventListener("hashchange", handleLocationChange);
     };
   }, []);
 
@@ -190,7 +196,21 @@ export default function App() {
     return (
       <AdminDashboard
         onClose={() => {
-          window.history.pushState({}, "", "/");
+          // Clear query param
+          const searchParams = new URLSearchParams(window.location.search);
+          searchParams.delete("admin");
+          const searchStr = searchParams.toString();
+          const searchSuffix = searchStr ? `?${searchStr}` : "";
+
+          // Clear hash
+          if (window.location.hash === "#/admin" || window.location.hash === "#admin") {
+            window.location.hash = "";
+          }
+
+          // Go back relative path
+          const basePath = window.location.pathname.replace(/\/admin\/?$/, "") || "/";
+          
+          window.history.pushState({}, "", basePath + searchSuffix + (window.location.hash ? window.location.hash : ""));
           window.dispatchEvent(new Event("popstate"));
         }}
         shoes={shoes}
